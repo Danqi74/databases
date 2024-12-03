@@ -4,8 +4,10 @@ from sqlalchemy.exc import IntegrityError
 from flask import request
 
 from db import db
-from models import UserOrderModel, UserModel
+from models import UserOrderModel, UserModel, EquipmentModel
 from schemas import UserOrderSchema
+
+from datetime import datetime
 
 
 blp = Blueprint("User_orders", __name__, description="Operations on orders")
@@ -43,6 +45,7 @@ class UserOrders(MethodView):
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
 
+
 @blp.route("/user_order")
 class user_orderPost(MethodView):
     def post(self):
@@ -64,6 +67,30 @@ class user_orderPost(MethodView):
         except IntegrityError as e:
             db.session.rollback()
             return {"message": "Unique constraint violation: {}".format(e.orig)}, 400
+
+
+@blp.route("/user_order/str")
+class user_order_by_str(MethodView):
+    def post(self):
+        data = request.get_json()
+
+        user = UserModel.query.filter_by(name=data["user_name"], surname=data["user_surname"]).first()
+        if not user:
+            abort(404, message="User not found.")
+
+        equipment = EquipmentModel.query.filter_by(serial_number=data["equipment_serial_number"]).first()
+        if not equipment:
+            abort(404, message="Equipment not found.")
+
+        try:
+            current_time = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+            new_link = UserOrderModel(user_id=user.id, equipment_id=equipment.id, time_of_order=current_time)
+            db.session.add(new_link)
+            db.session.commit()
+            return {"message": "Link created successfully."}, 201
+        except IntegrityError as e:
+            db.session.rollback()
+            return {"message": "Error creating link: {}".format(e.orig)}, 400
 
 
 @blp.route("/user_order/user/<int:user_id>")

@@ -66,3 +66,17 @@ class GetAllTeams(MethodView):
     @blp.response(200, TeamSchema(many=True))
     def get(self):
         return TeamModel.query.all()
+
+
+@blp.route('/team/insert')
+class insert_records(MethodView):
+    def post(self):
+        try:
+            for i in range(1, 11):
+                record = TeamModel(name=f"Noname{i}")
+                db.session.add(record)
+            db.session.commit()
+            return {"message": f"10 records inserted into team in column name"}, 200
+        except Exception as e:
+            db.session.rollback()
+            return {"error": str(e)}, 500

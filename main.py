@@ -1,10 +1,12 @@
-from os import environ
+from os import environ, path
 
 from flask import Flask
 from flask_smorest import Api
 from flask_cors import CORS
 
 from db import db
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
 
 from resources.user import blp as UserBlueprint
 from resources.team import blp as TeamBlueprint
@@ -18,12 +20,14 @@ from resources.equipment_type import blp as EquipmentTypeBlueprint
 from resources.equipment_condition import blp as EquipmentConditionBlueprint
 from resources.equipment import blp as EquipmentBlueprint
 from resources.equipment_repair import blp as EquipmentRepairBlueprint
+from resources.laser_cutter_order_evaluation import blp as LaserCutterEvaluationBlueprint
 
 from dotenv import load_dotenv
 
 load_dotenv('.env')
 
 DATABASE_URI = environ.get("DATABASE_URI")
+PLAIN_DATABASE_URI = environ.get("PLAIN_DATABASE_URI")
 
 app = Flask(__name__)
 CORS(app)
@@ -40,6 +44,12 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
+def create_tables():
+    with app.app_context():
+        db.create_all()
+
+create_tables()
+
 api = Api(app)
 
 api.register_blueprint(UserBlueprint)
@@ -54,6 +64,7 @@ api.register_blueprint(EquipmentTypeBlueprint)
 api.register_blueprint(EquipmentConditionBlueprint)
 api.register_blueprint(EquipmentBlueprint)
 api.register_blueprint(EquipmentRepairBlueprint)
+api.register_blueprint(LaserCutterEvaluationBlueprint)
 
 if __name__ == "__main__":
     app.run()

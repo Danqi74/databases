@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask import request
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql import text
 
 from db import db
 from models import UserModel
@@ -80,3 +81,27 @@ class TempGetUsers(MethodView):
     def get(self, team_id):
         users = UserModel.query.filter(UserModel.team_id == team_id).all()
         return users
+
+
+@blp.route("/user/raw", methods=["POST"])
+class UserRawInsert(MethodView):
+    def post(self):
+        data = request.get_json()
+        
+        sql_query = text("""
+            INSERT INTO user (name, surname, email, team_id) 
+            VALUES (:name, :surname, :email, :team_id)
+        """)
+        
+        try:
+            db.session.execute(sql_query, {
+                "name": data["name"],
+                "surname": data["surname"],
+                "email": data["email"],
+                "team_id": data.get("team_id")
+            })
+            db.session.commit()
+            return {"message": "User inserted successfully."}, 201
+        except IntegrityError as e:
+            db.session.rollback()
+            return {"message": "Unique constraint violation: {}".format(e.orig)}, 400

@@ -10,3 +10,4 @@ from models.user_order import UserOrderModel
 from models.laser_cutter import LaserCutterModel
 from models.laser_cutter_order import LaserCutterOrderModel
 from models.laser_cutter_repair import LaserCutterRepairModel
+from models.laser_cutter_order_evaluation import LaserCutterOrderEvaluationModel

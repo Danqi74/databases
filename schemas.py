@@ -82,3 +82,8 @@ class WorkerSchema(Schema):
     phone_number = fields.Str()
     address = fields.Str()
     worker_position = fields.Nested('WorkerPositionSchema', dump_only=True)
+
+class LaserCutterOrderEvaluationSchema(Schema):
+    id = fields.Int(dump_only=True)
+    order_id = fields.Int()
+    quality_score = fields.Int()
