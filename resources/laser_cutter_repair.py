@@ -12,7 +12,7 @@ blp = Blueprint("Laser_repairs", __name__, description="Operations on laser repa
 
 
 @blp.route("/laser_repair/<int:repair_id>")
-class laser_repair(MethodView):
+class workerOrders(MethodView):
     @blp.response(200, LaserCutterRepairSchema)
     def get(self, repair_id):
         laser_repair = LaserCutterRepairModel.query.get_or_404(repair_id)
@@ -67,7 +67,7 @@ class laser_repairPost(MethodView):
 
 
 @blp.route("/laser_repair/worker/<int:worker_id>")
-class laser_repairs(MethodView):
+class worker(MethodView):
     @blp.response(200, LaserCutterRepairSchema(many=True))
     def get(self, worker_id):
         laser_repairs = LaserCutterRepairModel.query.filter(LaserCutterRepairModel.worker_id == worker_id).all()
@@ -75,7 +75,7 @@ class laser_repairs(MethodView):
 
 
 @blp.route("/laser_repairs")
-class GetAlllaser_repair(MethodView):
+class GetAllworkerOrders(MethodView):
     @blp.response(200, LaserCutterRepairSchema(many=True))
     def get(self):
         return LaserCutterRepairModel.query.all()

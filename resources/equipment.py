@@ -12,7 +12,7 @@ blp = Blueprint("Equipments", __name__, description="Operations on equipment")
 
 
 @blp.route("/equipment/<int:equipment_id>")
-class equipment(MethodView):
+class Userequipments(MethodView):
     @blp.response(200, EquipmentSchema)
     def get(self, equipment_id):
         equipment = EquipmentModel.query.get_or_404(equipment_id)

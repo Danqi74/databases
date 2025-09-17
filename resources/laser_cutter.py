@@ -12,7 +12,7 @@ blp = Blueprint("Laser_cutters", __name__, description="Operations on laser cutt
 
 
 @blp.route("/laser_cutter/<int:laser_id>")
-class laser_cutter(MethodView):
+class Userlasers(MethodView):
     @blp.response(200, LaserCutterSchema)
     def get(self, laser_id):
         laser_cutter = LaserCutterModel.query.get_or_404(laser_id)

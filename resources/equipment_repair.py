@@ -12,7 +12,7 @@ blp = Blueprint("Equipment_repairs", __name__, description="Operations on equipm
 
 
 @blp.route("/equipment_repair/<int:repair_id>")
-class equipment_repair(MethodView):
+class workerOrders(MethodView):
     @blp.response(200, EquipmentRepairSchema)
     def get(self, repair_id):
         equipment_repair = EquipmentRepairModel.query.get_or_404(repair_id)
@@ -67,7 +67,7 @@ class equipment_repairPost(MethodView):
 
 
 @blp.route("/equipment_repair/worker/<int:worker_id>")
-class equipment_repair_worker(MethodView):
+class worker(MethodView):
     @blp.response(200, EquipmentRepairSchema(many=True))
     def get(self, worker_id):
         equipment_repairs = EquipmentRepairModel.query.filter(EquipmentRepairModel.worker_id == worker_id).all()
@@ -75,7 +75,7 @@ class equipment_repair_worker(MethodView):
 
 
 @blp.route("/equipment_repairs")
-class GetAllequipment_repairs(MethodView):
+class GetAllworkerOrders(MethodView):
     @blp.response(200, EquipmentRepairSchema(many=True))
     def get(self):
         return EquipmentRepairModel.query.all()

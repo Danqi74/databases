@@ -12,7 +12,7 @@ blp = Blueprint("Laser_orders", __name__, description="Operations on laser order
 
 
 @blp.route("/laser_order/<int:order_id>")
-class laser_order(MethodView):
+class UserOrders(MethodView):
     @blp.response(200, LaserCutterOrderSchema)
     def get(self, order_id):
         laser_order = LaserCutterOrderModel.query.get_or_404(order_id)
@@ -88,7 +88,7 @@ class TeamOrders(MethodView):
         return team_orders
 
 @blp.route("/laser_orders")
-class GetAllLaser_order(MethodView):
+class GetAllUserOrders(MethodView):
     @blp.response(200, LaserCutterOrderSchema(many=True))
     def get(self):
         return LaserCutterOrderModel.query.all()
